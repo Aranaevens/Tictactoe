@@ -1,0 +1,35 @@
+h3{
+    font-size: 35px;
+}
+
+p.sign{
+    font-size: 60px;
+    text-align: center;
+}
+
+table{
+    border-collapse: collapse;
+    height: 100%;
+    width: 100%;
+}
+
+table, tbody, th, td{
+    font-size: 75px;
+}
+
+table, th, td{
+    border: 1px solid black;
+}
+
+td{
+    width: 33.33%;
+    text-align: center;
+}
+
+th{
+    height: 100px;
+}
+
+form {
+    display: inline-block;
+}

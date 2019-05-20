@@ -23,16 +23,18 @@ class Grid
 
     function showTile($i, $j)
     {
-        if ($this->matrix_[$i][$j] == 0)
-        {
-            $_SESSION['i']=$i;
-            $_SESSION['j']=$j;
-            echo '<a href="fill.php"><img src="empty.png">Empty case</img></a>';
-        }
         if ($this->matrix_[$i][$j] == 1)
-            echo '<p class="p1-sign">' . $this->j1_->getSign() . '</p>';
+            return $this->j1_->getSign();
         if ($this->matrix_[$i][$j] == 2)
-            echo '<p class="p2-sign">' . $this->j2_->getSign() . '</p>';
+            return $this->j2_->getSign();
+    }
+
+    function isTileEmpty($i, $j)
+    {
+        if ($this->matrix_[$i][$j] == 0)
+            return true;
+        else
+            return false;
     }
 
     function getTile($i, $j)
@@ -45,39 +47,34 @@ class Grid
     {
         for($i=0; $i<3; $i++)
         {
-            if ((getTile($i, 1) == getTile($i, 2)) && (getTile($i, 2) == getTile($i, 3)) && getTile($i,1))
+            if (($this->getTile($i, 0) == $this->getTile($i, 1)) && ($this->getTile($i, 1) == $this->getTile($i, 2)) && $this->getTile($i,0))
             // Le test cherche si une ligne est égale et non égale à 0.
             {
                 $this->win_ = true;
                 // Comme elle n'est pas égale à 0 c'est soit 1 (j1 gagne), soit 2 (j2 gagne).
-                if (getTile($i,1) == 1)
+                if ($this->getTile($i,0) == 1)
                     $this->j1_->setWin();
                 else
                     $this->j2_->setWin();
             }
 
-            if ((getTile(1, $i) == getTile(2, $i)) && (getTile(2, $i) == getTile(3, $i)) && getTile(1,$i))
+            if (($this->getTile(0, $i) == $this->getTile(1, $i)) && ($this->getTile(1, $i) == $this->getTile(2, $i)) && $this->getTile(0,$i))
+            // Cherche si une colonne est gagnante.
             {
                 $this->win_ = true;
-                if (getTile(1,$i) == 1)
+                if ($this->getTile(0,$i) == 1)
                     $this->j1_->setWin();
                 else
                     $this->j2_->setWin();
             }
         }
-        if ((getTile(1, 1) == getTile(2, 2)) && (getTile(2, 2) == getTile(3, 3)) && getTile(1,1))
+        $c1 = (($this->getTile(0, 0) == $this->getTile(1, 1)) && ($this->getTile(1, 1) == $this->getTile(2, 2)) && $this->getTile(0,0));
+        $c2 = (($this->getTile(0, 2) == $this->getTile(1, 1)) && ($this->getTile(1, 1) == $this->getTile(2, 0)) && $this->getTile(1,1));
+        if (($c1 || $c2))
+        // Cherche une diagonale gagnante.
         {
             $this->win_ = true;
-            if (getTile(1,1) == 1)
-                $this->j1_->setWin();
-            else
-                $this->j2_->setWin();
-        }
-
-        else if ((getTile(1, $i) == getTile(2, $i)) && (getTile(2, $i) == getTile(3, $i)) && getTile(1,$i))
-        {
-            $this->win_ = true;
-            if (getTile(1,$i) == 1)
+            if ($this->getTile(1,1) == 1)
                 $this->j1_->setWin();
             else
                 $this->j2_->setWin();
@@ -89,9 +86,9 @@ class Grid
             $flag = true;
             for ($i = 0; $i<3; $i++)
             {
-                for ($j = 0; $j<3; j++)
+                for ($j = 0; $j<3; $j++)
                 {
-                    if (!getTile($i, $j))
+                    if (!$this->getTile($i, $j))
                         $flag = false;
                         // S'il reste un 0, ce n'est pas un match nul.
                 }
@@ -102,14 +99,39 @@ class Grid
     }
 
     function getWin()
+    {
+        if ($this->win_ == true)
+        {
+            if ($this->j1_->getWin())
+                return $this->j1_;
+            else if ($this->j2_->getWin())
+                return $this->j2_;
+            else
+                return new Joueur(' ');
+        }
+        else
+            return 0;
+    }
 
     function changeTileJ1($i, $j)
     {
+        var_dump($i, $j);
         $this->matrix_[$i][$j] = 1;
     }
 
     function changeTileJ2($i, $j)
     {
+        var_dump($i, $j);
         $this->matrix_[$i][$j] = 2;
+    }
+
+    function getJ1()
+    {
+        return $this->j1_;
+    }
+    
+    function getJ2()
+    {
+        return $this->j2_;
     }
 }
